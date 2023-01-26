@@ -6,7 +6,7 @@ class SomeTagLib implements TagLibrary {
     static defaultEncodeAs = [taglib:'html']
     static namespace = 'some'
 
-    int call = 0
+    Map<String, Integer> propMissCount = [:]
     //static encodeAsForTags = [tagName: [taglib:'html'], otherTagName: [taglib:'none']]
 
     def sayTrue = {
@@ -15,8 +15,13 @@ class SomeTagLib implements TagLibrary {
 
     @Override
     Object propertyMissing(String name) {
-        call++
-        println "Property Missing called ${call} times for '${name}'"
+        String key = "${this.class.name} :: ${name}"
+
+        int callNum = propMissCount.get(key, 0)
+        callNum++
+        propMissCount.put(key, callNum)
+
+        println "Property Missing called! ${key} ; ${callNum}"
         return TagLibrary.super.propertyMissing(name)
     }
 }
